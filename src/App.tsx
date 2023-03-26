@@ -2,9 +2,9 @@ import './App.css';
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { AppBar, Box, Button, Card, CardActions, CardContent, CardMedia, Container, CssBaseline, Grid, IconButton, Input, Link, Menu, Stack, Toolbar } from '@mui/material';
+import { AppBar, Box, Button, Card, CardActions, CardContent, CardMedia, Container, CssBaseline, Grid, IconButton, Input, Stack, Toolbar } from '@mui/material';
 import JSZip from 'jszip';
-import { AccountCircle, Download, GitHub } from '@mui/icons-material';
+import { AccountCircle, Download, GitHub, Link } from '@mui/icons-material';
 import logo from './logo.png';
 
 // Types
@@ -109,6 +109,9 @@ const PreviewGridView = ({ icons }: { icons: Icon[] }) => {
               <CardActions >
                 <IconButton size="small" href={icon.url} download={icon.name} >
                   <Download />
+                </IconButton>
+                <IconButton size="small" href={icon.url} target='_blank'>
+                  <Link />
                 </IconButton>
               </CardActions>
             </Card>
