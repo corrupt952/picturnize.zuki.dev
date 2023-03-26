@@ -2,9 +2,10 @@ import './App.css';
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { AppBar, Box, Button, Card, CardActions, CardContent, CardMedia, Container, CssBaseline, Grid, IconButton, Input, Stack, Toolbar } from '@mui/material';
+import { AppBar, Box, Button, Card, CardActions, CardContent, CardMedia, Container, CssBaseline, Grid, IconButton, Input, Link, Menu, Stack, Toolbar } from '@mui/material';
 import JSZip from 'jszip';
-import { Download } from '@mui/icons-material';
+import { AccountCircle, Download, GitHub } from '@mui/icons-material';
+import logo from './logo.png';
 
 // Types
 type IconPattern = {
@@ -39,14 +40,35 @@ const iconPatterns: Map<string, IconPattern> = new Map([
 ])
 
 // Function Components
+const LogoImage = ({width, height}: { width: string, height: string }) => {
+  return (
+    <Box
+      component="img"
+      src={logo}
+      alt="logo"
+      sx={{ display: { xs: 'none', md: 'flex' }, width: width, height: height }} />
+  )
+}
+
 const Header = ({ title }: { title: string }) => {
   return (
     <AppBar position="relative">
       <Toolbar>
-        <img src="./logo.png" alt="logo" style={{ width: '2rem', height: 'auto' }} />
-        <Typography variant="h6" color="inherit" noWrap>
-          {title}
-        </Typography>
+        <Grid justifyContent={'space-between'} container spacing={24}>
+          <Grid item>
+            <Typography variant="h6" color="inherit" display='flex' alignItems='center' flexWrap='wrap' noWrap>
+              <LogoImage width='2rem' height='2rem' /> {title}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Button variant='contained' href='https://github.com/corrupt952/picturnize' startIcon={<GitHub />}>
+              GitHub
+            </Button>
+            <Button variant='contained' href='https://zuki.dev' startIcon={<AccountCircle />}>
+              Developer
+            </Button>
+          </Grid>
+        </Grid>
       </Toolbar>
     </AppBar>
   )
@@ -185,7 +207,7 @@ const App = () => {
         <Box sx={{ bgcolor: 'background.paper', pt: 8, pb: 6 }} className="cover">
           <Container maxWidth="sm">
             <Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="center">
-              <img src="./logo.png" alt="logo" style={{ width: '4rem', height: 'auto' }} />
+              <LogoImage width='4rem' height='4rem' />
               <Typography component="h1" variant="h2" align="center" color="white" gutterBottom>
                 {title}
               </Typography>
