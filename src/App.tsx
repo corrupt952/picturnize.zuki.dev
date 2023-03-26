@@ -94,7 +94,7 @@ const PreviewGridView = ({ icons }: { icons: Icon[] }) => {
         return (
           <Grid item key={icon.name} xs={12} sm={6} md={4}>
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <CardMedia component="img" image={icon.url} alt={icon.name} />
+              <CardMedia component="img" image={icon.url} alt={icon.name} className="preview-image" />
               <CardContent sx={{ flexGrow: 1 }}>
                 <Typography gutterBottom variant="h5" component="h2">
                   {icon.name}

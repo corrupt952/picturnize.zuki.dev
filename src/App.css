@@ -13,3 +13,13 @@
   background-color: transparent;
   color: white;
 }
+
+.preview-image {
+  background-color: #ffffff;
+  background-image:
+    repeating-linear-gradient(45deg, #ececec 25%, transparent 25%, transparent 75%, #ececec 75%, #ececec),
+    repeating-linear-gradient(45deg, #ececec 25%, #ffffff 25%, #ffffff 75%, #ececec 75%, #ececec);
+  background-position: 0 0, 10px 10px !important;
+  background-size: 20px 20px !important;
+  background-repeat: repeat !important;
+}
