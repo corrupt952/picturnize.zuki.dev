@@ -2,8 +2,9 @@ import './App.css';
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { AppBar, Box, Button, Card, CardContent, CardMedia, Container, CssBaseline, Grid, Input, Stack, Toolbar } from '@mui/material';
+import { AppBar, Box, Button, Card, CardActions, CardContent, CardMedia, Container, CssBaseline, Grid, IconButton, Input, Stack, Toolbar } from '@mui/material';
 import JSZip from 'jszip';
+import { Download } from '@mui/icons-material';
 
 // Types
 type IconPattern = {
@@ -40,14 +41,14 @@ const iconPatterns: Map<string, IconPattern> = new Map([
 // Function Components
 const Header = ({ title }: { title: string }) => {
   return (
-      <AppBar position="relative">
-        <Toolbar>
-          <img src="./logo.png" alt="logo" style={{ width: '2rem', height: 'auto' }} />
-          <Typography variant="h6" color="inherit" noWrap>
-            {title}
-          </Typography>
-        </Toolbar>
-      </AppBar>
+    <AppBar position="relative">
+      <Toolbar>
+        <img src="./logo.png" alt="logo" style={{ width: '2rem', height: 'auto' }} />
+        <Typography variant="h6" color="inherit" noWrap>
+          {title}
+        </Typography>
+      </Toolbar>
+    </AppBar>
   )
 }
 
@@ -83,6 +84,11 @@ const PreviewGridView = ({ icons }: { icons: Icon[] }) => {
                   {`Format: ${pattern.type}`}
                 </Typography>
               </CardContent>
+              <CardActions >
+                <IconButton size="small" href={icon.url} download={icon.name} >
+                  <Download />
+                </IconButton>
+              </CardActions>
             </Card>
           </Grid>
         )
@@ -116,7 +122,9 @@ const DownloadButton = ({ icons }: { icons: Icon[] }) => {
   }
 
   return (
-    <Button variant="contained" onClick={handleDownload}>DOWNLOAD</Button>
+    <Button variant="contained" onClick={handleDownload}>
+      DOWNLOAD ALL
+    </Button>
   )
 }
 
@@ -187,25 +195,26 @@ const App = () => {
               <br />
               Communication to the server does not involve uploading files, but converting files on the browser.
             </Typography>
-
-            <Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="center">
-              <Input type="file"
-                id="ImageAttachment"
-                style={{ display: 'none' }}
-                inputProps={{ accept: 'image/jpeg, image/png' }}
-                onChange={handleSelectedFile} />
-              <Input type="text" id="ImageAttachmentName" readOnly />
-              <Button variant="contained" onClick={handleBrowse}>BROWSE</Button>
-            </Stack>
-            <Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="center">
-              <DownloadButton icons={icons} />
-            </Stack>
           </Container>
         </Box>
+        <Container sx={{ py: 8 }} maxWidth="md">
+          <Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="center">
+            <Input type="file"
+              id="ImageAttachment"
+              style={{ display: 'none' }}
+              inputProps={{ accept: 'image/jpeg, image/png' }}
+              onChange={handleSelectedFile} />
+            <Input type="text" id="ImageAttachmentName" readOnly />
+            <Button variant="contained" onClick={handleBrowse}>BROWSE</Button>
+            <DownloadButton icons={icons} />
+          </Stack>
+        </Container>
         <Container sx={{ py: 8 }} maxWidth="md">
           <Typography variant="h4" align="center" color="text.primary" gutterBottom>
             Preview
           </Typography>
+        </Container>
+        <Container sx={{ py: 8 }} maxWidth="md">
           <PreviewGridView icons={Array.from(iconPatterns).map(([name, _]) => {
             return icons.find((icon) => icon.name === name)!
           })} />
