@@ -5,7 +5,13 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AppBar, Box, Button, Card, CardContent, CardMedia, Container, CssBaseline, Grid, Input, Stack, Toolbar } from '@mui/material';
 import JSZip from 'jszip';
 
-const title = 'Picturnize';
+// Types
+type Icon = {
+  name: string,
+  url: string,
+}
+
+// Constraints
 const theme = createTheme({
   palette: {
     primary: {
@@ -13,36 +19,7 @@ const theme = createTheme({
     },
   },
 });
-
-type Icon = {
-  name: string,
-  url: string,
-}
-
-const Header = () => {
-  return (
-    <AppBar position="relative">
-      <Toolbar>
-        <img src="./logo.png" alt="logo" style={{ width: '2rem', height: 'auto'}} />
-        <Typography variant="h6" color="inherit" noWrap>
-          {title}
-        </Typography>
-      </Toolbar>
-    </AppBar>
-  );
-}
-
-const Footer = () => {
-  return (
-    <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-      <Typography variant="body2" color="textSecondary" align="center">
-        {`@ 2023- K@zuki. All rights reserved.`}
-      </Typography>
-    </Box>
-  );
-}
-
-const iconPatterns: Map<string, { size: number, ext: string, type: string}> = new Map([
+const iconPatterns: Map<string, { size: number, ext: string, type: string }> = new Map([
   ['favicon.ico', { size: 16, ext: 'ico', type: 'image/x-icon' }],
   ['favicon-16x16.png', { size: 16, ext: 'png', type: 'image/png' }],
   ['favicon-32x32.png', { size: 32, ext: 'png', type: 'image/png' }],
@@ -53,6 +30,60 @@ const iconPatterns: Map<string, { size: number, ext: string, type: string}> = ne
   ['apple-touch-icon.png', { size: 180, ext: 'png', type: 'image/png' }],
   ['android-chrome-192x192.png', { size: 192, ext: 'png', type: 'image/png' }],
 ])
+
+// Function Components
+const Header = ({ title }: { title: string }) => {
+  return (
+      <AppBar position="relative">
+        <Toolbar>
+          <img src="./logo.png" alt="logo" style={{ width: '2rem', height: 'auto' }} />
+          <Typography variant="h6" color="inherit" noWrap>
+            {title}
+          </Typography>
+        </Toolbar>
+      </AppBar>
+  )
+}
+
+const Footer = () => {
+  return (
+    <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
+      <Typography variant="body2" color="textSecondary" align="center">
+        {`@ 2023- K@zuki. All rights reserved.`}
+      </Typography>
+    </Box>
+  )
+}
+
+const PreviewGridView = ({ icons }: { icons: Icon[] }) => {
+  return (
+    <Grid container spacing={4}>
+      {icons.map((icon) => {
+        if (!icon || !icon.name) return null;
+        const pattern = iconPatterns.get(icon.name)!;
+
+        return (
+          <Grid item key={icon.name} xs={12} sm={6} md={4}>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardMedia component="img" image={icon.url} alt={icon.name} />
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {icon.name}
+                </Typography>
+                <Typography>
+                  {`Size: ${pattern.size}x${pattern.size}`}
+                </Typography>
+                <Typography>
+                  {`Format: ${pattern.type}`}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        )
+      })}
+    </Grid>
+  )
+}
 
 const App = () => {
   const [file, setFile] = React.useState<File | null>(null);
@@ -124,15 +155,17 @@ const App = () => {
     })
   }
 
+  const title = 'Picturnize';
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Header />
+      <Header title={title} />
       <main>
         <Box sx={{ bgcolor: 'background.paper', pt: 8, pb: 6 }} className="cover">
           <Container maxWidth="sm">
             <Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="center">
-              <img src="./logo.png" alt="logo" style={{ width: '4rem', height: 'auto'}} />
+              <img src="./logo.png" alt="logo" style={{ width: '4rem', height: 'auto' }} />
               <Typography component="h1" variant="h2" align="center" color="white" gutterBottom>
                 {title}
               </Typography>
@@ -161,32 +194,9 @@ const App = () => {
           <Typography variant="h4" align="center" color="text.primary" gutterBottom>
             Preview
           </Typography>
-          <Grid container spacing={4}>
-            {Array.from(iconPatterns.keys()).map((name) => {
-              const pattern = iconPatterns.get(name)!;
-              const icon = icons.find((icon) => icon.name === name)!;
-              if (!icon) return null; // nothing
-
-              return (
-                <Grid item key={icon.name} xs={12} sm={6} md={4}>
-                  <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <CardMedia component="img" image={icon.url} alt={icon.name} />
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        {icon.name}
-                      </Typography>
-                      <Typography>
-                        {`Size: ${pattern.size} x ${pattern.size}`}
-                      </Typography>
-                      <Typography>
-                        {`Format: ${file?.type}`}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              )
-            })}
-          </Grid>
+          <PreviewGridView icons={Array.from(iconPatterns).map(([name, _]) => {
+            return icons.find((icon) => icon.name === name)!
+          })} />
         </Container>
       </main>
       <Footer />
