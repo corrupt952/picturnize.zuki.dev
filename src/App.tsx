@@ -6,9 +6,15 @@ import { AppBar, Box, Button, Card, CardContent, CardMedia, Container, CssBaseli
 import JSZip from 'jszip';
 
 // Types
+type IconPattern = {
+  size: number,
+  ext: string,
+  type: string,
+}
 type Icon = {
   name: string,
   url: string,
+  pattern: IconPattern,
 }
 
 // Constraints
@@ -19,7 +25,7 @@ const theme = createTheme({
     },
   },
 });
-const iconPatterns: Map<string, { size: number, ext: string, type: string }> = new Map([
+const iconPatterns: Map<string, IconPattern> = new Map([
   ['favicon.ico', { size: 16, ext: 'ico', type: 'image/x-icon' }],
   ['favicon-16x16.png', { size: 16, ext: 'png', type: 'image/png' }],
   ['favicon-32x32.png', { size: 32, ext: 'png', type: 'image/png' }],
@@ -60,7 +66,7 @@ const PreviewGridView = ({ icons }: { icons: Icon[] }) => {
     <Grid container spacing={4}>
       {icons.map((icon) => {
         if (!icon || !icon.name) return null;
-        const pattern = iconPatterns.get(icon.name)!;
+        const pattern = icon.pattern;
 
         return (
           <Grid item key={icon.name} xs={12} sm={6} md={4}>
@@ -82,6 +88,35 @@ const PreviewGridView = ({ icons }: { icons: Icon[] }) => {
         )
       })}
     </Grid>
+  )
+}
+
+const DownloadButton = ({ icons }: { icons: Icon[] }) => {
+  const handleDownload = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
+
+    const zip = new JSZip()
+    const promises = icons.map((icon) => {
+      return fetch(icon.url)
+        .then((response) => response.blob())
+        .then((blob) => {
+          zip.file(icon.name, blob)
+        })
+    })
+    Promise.all(promises).then(() => {
+      zip.generateAsync({ type: 'blob' }).then((blob) => {
+        const date = new Date();
+        const dateStr = date.toISOString().replace(/[^0-9]/g, '').slice(0, -5);
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `icons-${dateStr}.zip`;
+        link.click();
+      })
+    })
+  }
+
+  return (
+    <Button variant="contained" onClick={handleDownload}>DOWNLOAD</Button>
   )
 }
 
@@ -120,7 +155,7 @@ const App = () => {
             if (blob) {
               const url = URL.createObjectURL(blob);
               setIcons((icons) => {
-                let _icons = [...icons, { name: name, url: url }];
+                let _icons = [...icons, { name: name, url: url, pattern: pattern }];
                 _icons.sort((a, b) => a.name > b.name ? -1 : 1);
                 return _icons;
               })
@@ -130,29 +165,6 @@ const App = () => {
         image.src = URL.createObjectURL(file);
       })
     }
-  }
-
-  const handleDownload = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.preventDefault();
-
-    const zip = new JSZip()
-    const promises = icons.map((icon) => {
-      return fetch(icon.url)
-        .then((response) => response.blob())
-        .then((blob) => {
-          zip.file(icon.name, blob)
-        })
-    })
-    Promise.all(promises).then(() => {
-      zip.generateAsync({ type: 'blob' }).then((blob) => {
-        const date = new Date();
-        const dateStr = date.toISOString().replace(/[^0-9]/g, '').slice(0, -5);
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `icons-${dateStr}.zip`;
-        link.click();
-      })
-    })
   }
 
   const title = 'Picturnize';
@@ -186,7 +198,7 @@ const App = () => {
               <Button variant="contained" onClick={handleBrowse}>BROWSE</Button>
             </Stack>
             <Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="center">
-              <Button variant="contained" onClick={handleDownload}>DOWNLOAD</Button>
+              <DownloadButton icons={icons} />
             </Stack>
           </Container>
         </Box>
