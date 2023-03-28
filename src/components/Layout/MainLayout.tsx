@@ -1,7 +1,8 @@
 import React from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { AppBar, Box, Button, CssBaseline, Grid, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Button, CssBaseline, Grid, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import { AccountCircle, GitHub } from "@mui/icons-material";
+import MenuIcon from '@mui/icons-material/Menu';
 import { Logo } from "../Elements/Logo/Logo";
 import { APP_TITLE } from "../../config";
 
@@ -16,6 +17,8 @@ const THEME = createTheme({
 
 // Function Components
 const Header = () => {
+  const [open, setOpen] = React.useState(false);
+
   const navItems = [
     { name: 'GitHub', href: 'https://github.com/corrupt952/picturnize', icon: <GitHub /> },
     { name: 'Developer', href: 'https://zuki.dev', icon: <AccountCircle /> },
@@ -30,14 +33,36 @@ const Header = () => {
               <Logo width='2rem' height='2rem' /> {APP_TITLE}
             </Typography>
           </Grid>
-          <Grid item>
+          <Grid item sx={{ display: { xs: 'none', md: 'flex'} }} >
             {navItems.map((item) => {
               return (
-                <Button href={item.href} startIcon={item.icon} key={item.name} sx={{ color: 'white' }}>
+                <Button href={item.href} target="_blank" startIcon={item.icon} key={item.name} sx={{ color: 'white' }}>
                   {item.name}
                 </Button>
               );
             })}
+          </Grid>
+          <Grid item sx={{ display: { xs: 'flex', md: 'none'} }} >
+            <IconButton color="inherit" onClick={() => setOpen(true)}>
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              keepMounted
+              open={Boolean(open)}
+              anchorEl={document.body}
+              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              onClose={() => setOpen(false)}
+              sx={{ display: { xs: 'block', md: 'none'} }}
+            >
+              {navItems.map((item) => {
+                return (
+                  <MenuItem component="a" key={item.name} href={item.href} target="_blank">
+                    {item.name}
+                  </MenuItem>
+                );
+              })}
+            </Menu>
           </Grid>
         </Grid>
       </Toolbar>
