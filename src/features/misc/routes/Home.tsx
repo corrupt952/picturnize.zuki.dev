@@ -23,6 +23,7 @@ const IconPatterns: Map<string, IconPattern> = new Map([
   ['favicon.ico', { size: 16, ext: 'ico', type: 'image/x-icon' }],
   ['favicon-16x16.png', { size: 16, ext: 'png', type: 'image/png' }],
   ['favicon-32x32.png', { size: 32, ext: 'png', type: 'image/png' }],
+  ['favicon-48x48.png', { size: 48, ext: 'png', type: 'image/png' }],
   ['favicon-96x96.png', { size: 96, ext: 'png', type: 'image/png' }],
   ['favicon-128x128.png', { size: 128, ext: 'png', type: 'image/png' }],
   ['favicon-192x192.png', { size: 192, ext: 'png', type: 'image/png' }],
